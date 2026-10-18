@@ -1,0 +1,12 @@
+% Compile after a Manim/font setup and either LaTeX extension:
+% mkdir -p videos/pdf
+% xelatex -interaction=nonstopmode -halt-on-error -output-directory=videos/pdf examples/bengali.tex
+\documentclass{article}
+\usepackage{fontspec}
+\setmainfont{CMU Serif}
+\newfontfamily\bengali[Script=Bengali]{Noto Serif Bengali}
+\begin{document}
+Computer Modern Unicode Serif: $E=mc^2$.
+
+{\bengali বাংলা ভাষা ও গণিতের পরীক্ষা।}
+\end{document}

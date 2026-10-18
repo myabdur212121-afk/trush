@@ -1,0 +1,44 @@
+{
+  "project": "Factorial — 1Fill2Blank",
+  "order": [
+    "S01",
+    "S02",
+    "LOGO_MID",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "OUTRO",
+    "END"
+  ],
+  "voice_segments": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09"
+  ],
+  "audio_pattern": "{segment}.mp3",
+  "gap_seconds": 0.45,
+  "music_below_voice_db": 11.0,
+  "music": {
+    "preset": "background",
+    "bpm": 72,
+    "seed": 7,
+    "target_peak": 0.62,
+    "ducking": {
+      "threshold": 0.02,
+      "ratio": 6,
+      "attack_ms": 150,
+      "release_ms": 850
+    }
+  },
+  "notes": "LOGO_MID and OUTRO are music-only. S07's pad is deliberately inserted before the equation assembles, over the completed tree and six arrangements."
+}

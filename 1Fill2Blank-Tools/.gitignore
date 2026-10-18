@@ -1,0 +1,27 @@
+# Python/runtime
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local work and render output
+work/
+render/
+media/
+cache/
+*.log
+
+# Large rendered videos are kept outside this tools repository by default.
+# Use `git add -f path/to/file.mp4` only when a small preview is intentional.
+*.mp4
+
+# Secrets: never commit credentials. This is a seat belt, not a substitute
+# for checking `git status` and the staged diff before every push.
+.env
+.env.*
+*token*
+*Token*
+*.pem
+*.key
+
+.DS_Store

@@ -1,0 +1,8 @@
+# Only the music generator needs a third-party Python package.
+# compute_pads.py, mix_voice_music.py and manim_sync.py use the standard library.
+numpy>=1.26
+
+# External command-line tools are installed separately:
+# - FFmpeg + ffprobe (mixing/measurement)
+# - Manim Community + LaTeX + fonts (rendering; use the owner's
+#   manim-sandbox-setup project rather than copying its installers here)
