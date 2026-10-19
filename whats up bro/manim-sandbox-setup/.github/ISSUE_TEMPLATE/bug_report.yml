@@ -1,0 +1,69 @@
+name: Bug report
+description: Report a reproducible setup or render problem.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read the sandbox guide and troubleshooting page first.
+        Do not paste tokens, credentials, private data, or full environment dumps.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, architecture, and sandbox provider.
+      placeholder: Debian 13, Python 3.13, x86-64, headless sandbox
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - ManimGL
+        - ManimCE
+        - Font helper
+        - LaTeX extension
+        - Documentation
+    validations:
+      required: true
+  - type: dropdown
+    id: latex
+    attributes:
+      label: LaTeX profile
+      options:
+        - Not installed / not requested
+        - Slim
+        - Full
+        - Other existing installation
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands and a minimal failing scene, without credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized error excerpt
+      description: Remove any credentials and unrelated private paths/data.
+      render: text
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked the guide and troubleshooting page.
+          required: true
+        - label: This issue does not contain a token, credential or private key.
+          required: true

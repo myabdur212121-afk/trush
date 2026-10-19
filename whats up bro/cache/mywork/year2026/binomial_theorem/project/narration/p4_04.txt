@@ -1,0 +1,3 @@
+কিন্তু এখন প্রশ্ন হলো — এই সংখ্যাগুলো কি শুধু Binomial Theorem থেকে পাওয়া কিছু coefficient?
+নাকি এই triangle-এর ভেতরেই কোনো নিজস্ব mathematical pattern লুকিয়ে আছে?
+চলো, সেটাই দেখি।

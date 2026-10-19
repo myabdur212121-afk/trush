@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-work-manim"
+version = "0.3.0"
+description = "Year-based manim work archive — import by year.project.module"
+requires-python = ">=3.10"
+dependencies = ["manim"]
+
+[tool.setuptools.packages.find]
+include = ["year2026*"]

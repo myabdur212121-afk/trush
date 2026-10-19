@@ -1,0 +1,6 @@
+# rendered videos & render caches (too big for git)
+output/
+media/
+__pycache__/
+tools/fr/
+*.log

@@ -1,0 +1,118 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper,left=0.50in,right=0.50in,top=0.45in,bottom=0.48in,includefoot,footskip=15pt]{geometry}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+
+\setdefaultlanguage[numerals=western]{bengali}
+\setotherlanguage{english}
+
+% Requested typefaces: CMU Serif for Latin text, Noto Serif Bengali for Bangla.
+\setmainfont{CMU Serif}
+\newfontfamily\bengalifont[Script=Bengali,Scale=1.0]{Noto Serif Bengali}
+
+\definecolor{formula}{HTML}{29445F}
+\definecolor{pagegray}{HTML}{7C8792}
+
+\newcommand{\EN}[1]{\textenglish{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyfoot[C]{\textcolor{pagegray}{\small\thepage}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.5pt plus 0.2pt minus 0.2pt}
+\setlength{\abovedisplayskip}{4.5pt plus 0.8pt minus 0.8pt}
+\setlength{\belowdisplayskip}{4.5pt plus 0.8pt minus 0.8pt}
+\setlength{\abovedisplayshortskip}{3.5pt plus 0.8pt minus 0.6pt}
+\setlength{\belowdisplayshortskip}{3.5pt plus 0.8pt minus 0.6pt}
+\setlength{\emergencystretch}{1.5em}
+\linespread{1.00}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\raggedbottom
+
+\begin{document}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+% চূড়ান্ত ভয়েস স্ক্রিপ্ট — Factorial (মোট ভিডিও 02:49)
+% পর্দার অ্যানিমেশনের সঙ্গে একে একে মিলিয়ে লেখা।
+% প্রতিটি অংশের আগে সময়ের জানালা দেওয়া আছে; সেই সময়ের
+% মধ্যে লাইনটা পড়ে শেষ করতে হবে। [কথা নেই] অংশে শুধু
+% লোগো/দৃশ্য চলবে, ভয়েস থাকবে না।
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+% ── [00:00–00:11] পর্দায় তিনটি বিষয়: Binomial Theorem, Taylor Series, Combinations — Factorial গুলো ঘিরে চিহ্নিত হয় ──
+তুমি হয়তো দেখে থাকবে যে \EN{Binomial Theorem}, \EN{Taylor Series}, এমনকি \EN{Combinations}-এর মতো বিভিন্ন গাণিতিক বিষয়েও \EN{Factorial}-এর ব্যবহার রয়েছে।
+
+% ── [00:11–00:22] বড় "!" আসে, তারপর 1! থেকে 20! এর তালিকা লেখা হয় ──
+কিন্তু তুমি কি কখনো নিজেকে প্রশ্ন করেছ, \EN{Factorial} জিনিসটা আসলে কী? কেন আমরা একের পর এক সংখ্যা গুণ করতে থাকি?
+
+% ── [00:22–00:34] পর্দায় n! = 1 × 2 × 3 × ⋯ × n, চারদিকে "?" — প্রশ্নটা জোর দেওয়া হয় ──
+সাধারণভাবে আমরা জানি,
+
+\[
+\color{formula}\displaystyle n! = 1\times2\times3\times\cdots\times n
+\]
+
+তাই না? কিন্তু প্রশ্ন হচ্ছে, আমরা কেন এভাবে গুণ করি? নিশ্চয়ই এর পেছনে কোনো একটা কারণ আছে।
+
+% ── [00:34–00:44] কথা নেই — চ্যানেলের লোগো (প্রথমবার) ──
+
+% ── [00:44–00:51] তিনজন খেলোয়াড় A, B, C আসে, ফুটবল মাঠ তৈরি হয় ──
+চলো, বিষয়টা সহজভাবে বুঝি। ধরো, আমাদের তিনজন খেলোয়াড় আছে—\EN{A}, \EN{B} ও \EN{C}। তাদের তিনটি আলাদা পজিশনে খেলতে হবে: গোলকিপার, ডিফেন্ডার ও স্ট্রাইকার।
+
+% ── [00:51–01:03] খেলোয়াড়রা পজিশন অদলবদল করে, স্ট্যাটাস বার বদলায় ──
+এখন, \EN{A} যদি গোলকিপার হয় আর \EN{B} যদি স্ট্রাইকার হয়, তাহলে তাদের পজিশন অদলবদল করে দিলে কি টিমের বিন্যাস একই থাকবে? না! কারণ খেলোয়াড়দের পজিশন বদলালে টিমের বিন্যাসও বদলে যায়, আর তার সঙ্গে পারফরম্যান্সও বদলাতে পারে।
+
+% ── [01:03–01:10] পর্দায় প্রশ্ন লেখা হয়: "তাহলে তিনজনকে মোট কতভাবে সাজানো যায়?" ──
+তাহলে আমরা একটা প্রশ্ন করতেই পারি: তিনজনকে মোট কতভাবে সাজানো যায়?
+
+% ── [01:10–01:30] তিনটি ব্লকে একে একে 3, 2, 1 বসে; খেলোয়াড়রা একে একে ব্লকে যায় ──
+চলো, একে একে দেখি।
+
+প্রথম পজিশনের জন্য আমাদের তিনটি \EN{Choice} আছে—\EN{A}, \EN{B} ও \EN{C}। ধরো, প্রথম পজিশনে \EN{A}-কে বসালাম। তাহলে দ্বিতীয় পজিশনের জন্য থাকবে দুটি \EN{Choice}—\EN{B} ও \EN{C}, কারণ \EN{A} তো ইতিমধ্যেই বসে গেছে। এবার দ্বিতীয় পজিশনে \EN{B}-কে বসালে, তৃতীয় পজিশনের জন্য বাকি থাকবে একমাত্র \EN{C}। অর্থাৎ, তৃতীয় পজিশনের \EN{Choice} মাত্র একটি।
+
+% ── [01:30–01:47] Combination Tree — Position 1, 2, 3 স্তর ধাপে ধাপে তৈরি হয়, নিচে Choice 3, 2, 1 ──
+এখন এই পুরো বিষয়টাকে একটা \EN{Tree Diagram}-এ দেখি। দেখো, এখানে তিনটি স্তর রয়েছে—প্রথম, দ্বিতীয় ও তৃতীয় পজিশন। প্রথম পজিশনের তিনটি \EN{Choice} থাকায় তিনটি শাখা তৈরি হবে—\EN{A}, \EN{B} ও \EN{C}। আর প্রতিটি শাখা থেকেই দ্বিতীয় পজিশনের জন্য দুটি করে শাখা বের হবে।
+
+% ── [01:47–02:00] গাছের ছয়টি পথ একে একে হাইলাইট হয়, বিন্যাসগুলো ডান দিকে জমা হয় ──
+অর্থাৎ, প্রথম পজিশনের প্রতিটি \EN{Choice}-এর জন্য দ্বিতীয় পজিশনে দুটি করে \EN{Choice} রয়েছে। তাহলে প্রথম দুটি পজিশন মিলিয়ে মোট উপায় কত? তিন গুণ দুই, অর্থাৎ ছয়টি। এবার প্রতিটি বিন্যাসের জন্য তৃতীয় পজিশনে একজনই বাকি থাকবে, তাই প্রতিটি শাখা থেকে আরেকটি করে শাখা বের হবে।
+
+% ── [02:00–02:09] ডান দিকে 3 × 2 × 1 = 6 সম্পূর্ণ হয়, তারপর 3! = 1 × 2 × 3 = 6 সমীকরণ ধাঁচে সাজে ──
+অর্থাৎ, মোট সম্পূর্ণ বিন্যাসের সংখ্যা হবে,
+
+\[
+\color{formula}\displaystyle 3\times2\times1=6
+\]
+
+দেখো, তিনজন খেলোয়াড়কে তিনটি আলাদা পজিশনে মোট ছয়ভাবে সাজানো সম্ভব।
+
+আর এই গুণফলটাকেই আমরা \EN{Factorial}-এর সাহায্যে সংক্ষেপে লিখতে পারি,
+
+\[
+\color{formula}\displaystyle 3! = 3\times2\times1 = 6
+\]
+
+% ── [02:09–02:33] সাধারণ রূপ — সারিতে A B C ⋯ L M N, সাতটি খোপে n, (n-1), (n-2), ⋯, 3, 2, 1 বসে ──
+এখন, তিনজনের বদলে \ensuremath{(n)} সংখ্যক খেলোয়াড়কে \ensuremath{(n)}টি আলাদা পজিশনে বসালে কী হবে? প্রথম পজিশনের জন্য থাকবে \ensuremath{(n)}টি \EN{Choice}, দ্বিতীয় পজিশনের জন্য \ensuremath{(n-1)}টি, তৃতীয় পজিশনের জন্য \ensuremath{(n-2)}টি। এভাবে প্রতি ধাপে একটি করে কমতে কমতে আসবে \ensuremath{(n-3)}, তারপর \ensuremath{3}, তারপর \ensuremath{2}, আর একেবারে শেষে গিয়ে পৌঁছাব মাত্র \ensuremath{1}টি \EN{Choice}-এ। অর্থাৎ, ধারাটা যতক্ষণ না \ensuremath{1}-এ এসে থামছে, ততক্ষণ চলতেই থাকবে।
+
+তাহলে মোট বিন্যাসের সংখ্যা হবে,
+
+\[
+\color{formula}\displaystyle n! = n\times(n-1)\times(n-2)\times\cdots\times3\times2\times1
+\]
+
+আর এই গুণফলকেই আমরা লিখি \ensuremath{(n!)}, অর্থাৎ \ensuremath{(n)} \EN{Factorial}।
+
+% ── [02:33–02:39] শেষ সমীকরণ পর্দায় জ্বলে ওঠে — সমাপনী লাইন ──
+এভাবেই আমরা বুঝতে পারি, \EN{Factorial}-এর সঙ্গে কোনো কিছু সাজানোর বা বিন্যস্ত করার সমস্যার একটি গভীর সম্পর্ক রয়েছে।
+
+% ── [02:39–02:49] কথা নেই — চ্যানেলের লোগো (শেষবার, ভিডিও শেষ) ──
+
+\end{document}

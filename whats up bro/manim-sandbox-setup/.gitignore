@@ -1,0 +1,62 @@
+# Credentials: never publish local authentication material.
+token.md
+[Tt][Oo][Kk][Ee][Nn].md
+*.token
+.env
+.env.*
+!.env.example
+credentials.json
+credentials.*.json
+secrets.*
+.git-credentials
+.netrc
+.ssh/
+*.pem
+*.key
+
+# Local runtimes and generated commands / TeX profiles.
+.venv/
+venv/
+.cache/
+.local/
+/bin/
+/configs/manimgl-tex.yml
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Fonts are downloaded ONCE into the workspace, never committed to Git.
+# Git-ignore does not prevent ordinary files from persisting in a workspace.
+/fonts
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# Renders, TeX byproducts, logs and archives.
+/media/
+/videos/
+/latex_cache/
+*.mp4
+*.mov
+*.webm
+*.gif
+*.pdf
+*.aux
+*.dvi
+*.xdv
+*.log
+*.zip
+*.tar
+*.tar.gz
+*.tar.xz
+
+# Editors and OS metadata.
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

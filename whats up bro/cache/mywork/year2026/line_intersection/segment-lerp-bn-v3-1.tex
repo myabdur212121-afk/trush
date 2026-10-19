@@ -1,0 +1,405 @@
+% রেখাংশের ছেদ ও LERP — বাংলা v3 (পরিষ্কার লেআউট সংস্করণ)
+% কার্ড-ভিত্তিক ডিজাইন + বর্ধিত গ্রাফ/চিত্র + অতিরিক্ত বোঝাপড়ার বাক্স
+% Compile: latexmk -xelatex segment-lerp-bn-v3.tex
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[top=12mm,bottom=14mm,left=12mm,right=12mm]{geometry}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.geometric}
+\usepackage[most]{tcolorbox}
+
+% ---------- fonts ----------
+\setmainfont{Latin Modern Roman}
+\newfontfamily\bengalisffont{Noto Sans Bengali}[Script=Bengali]
+\newfontfamily\latinrm{Latin Modern Roman}
+\setmainlanguage[changecounternumbering=true,numerals=bengali]{bengali}
+\setotherlanguage{english}
+\newcommand{\en}[1]{\textenglish{#1}}
+
+% ---------- colours ----------
+\definecolor{ink}{RGB}{30,41,59}
+\definecolor{teal}{RGB}{13,148,136}
+\definecolor{tealdk}{RGB}{15,118,110}
+\definecolor{panel}{RGB}{240,253,250}
+\definecolor{accent}{RGB}{234,88,12}
+\definecolor{plusc}{RGB}{22,163,74}
+\definecolor{minc}{RGB}{220,38,38}
+
+% ---------- layout ----------
+\setlength{\parskip}{2pt}
+\setlength{\parindent}{0pt}
+\abovedisplayskip=4pt \belowdisplayskip=4pt
+\abovedisplayshortskip=2pt \belowdisplayshortskip=2pt
+\renewcommand{\thepage}{\bengalinumber{\value{page}}}
+\setcounter{secnumdepth}{0}
+\pagestyle{plain}
+
+% ---------- tikz styles ----------
+\tikzset{
+  bn/.style={font=\bengalisffont\scriptsize,inner sep=1pt},
+  bnb/.style={font=\bengalisffont\bfseries\scriptsize,inner sep=1pt},
+  ln/.style={font=\latinrm\scriptsize\bfseries,inner sep=1pt},
+}
+
+% ---------- card system (tcolorbox) ----------
+\tcbset{
+  rowcard/.style={
+    enhanced, breakable,
+    sidebyside, sidebyside align=top, sidebyside gap=8pt,
+    righthand width=0.635\linewidth,
+    colback=white, colframe=teal!45, boxrule=0.7pt, arc=2mm,
+    boxsep=0pt, left=7pt, right=7pt, top=6pt, bottom=7pt,
+    colbacktitle=tealdk, coltitle=white,
+    fonttitle=\bengalisffont\bfseries\fontsize{11}{13}\selectfont,
+    fontupper=\bengalisffont\scriptsize,
+    fontlower=\bengalisffont\fontsize{9.3}{13.5}\selectfont,
+    before skip=7pt, after skip=2pt,
+  },
+  bandbox/.style={
+    enhanced, colback=tealdk, colframe=tealdk, boxrule=0pt, arc=1.8mm,
+    left=9pt, right=9pt, top=7pt, bottom=7pt,
+  },
+  roadbox/.style={
+    enhanced, colback=panel, colframe=teal!35, boxrule=0.7pt, arc=1.8mm,
+    left=6pt, right=6pt, top=7pt, bottom=6pt,
+    before skip=2pt, after skip=6pt,
+  },
+  footbox/.style={
+    enhanced, colback=ink, colframe=ink, boxrule=0pt, arc=1.8mm,
+    left=9pt, right=9pt, top=6pt, bottom=6pt,
+    before skip=8pt,
+  },
+}
+\newcommand{\badge}[1]{{\fontsize{14}{14}\selectfont#1}}
+\newcommand{\cardtitle}[2]{\badge{#1}\,\textbullet\;\,#2}
+\newcommand{\stitle}[1]{\par\vspace{2pt}{\bengalisffont\bfseries\fontsize{10.5}{13}\selectfont\color{tealdk}#1}\par\vspace{1pt}}
+\newcommand{\insight}[1]{\par\vspace{2pt}\colorbox{accent!10}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}{\bengalisffont\scriptsize\color{accent!85!black}\strut বোঝাপড়া: #1}\end{minipage}}\par\vspace{2pt}}
+\newcommand{\warnbox}[1]{\par\vspace{2pt}\colorbox{minc!10}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}{\bengalisffont\scriptsize\color{minc}\strut সতর্কতা: #1}\end{minipage}}\par\vspace{2pt}}
+\newcommand{\pill}[1]{\tcbox[nobeforeafter,colback=teal,colframe=tealdk,coltext=white,arc=1.6mm,boxsep=1pt,left=5pt,right=5pt,top=2.5pt,bottom=2.5pt,boxrule=0.4pt]{\bengalisffont\fontsize{8.3}{10}\selectfont#1}}
+
+\begin{document}
+
+% ================= TITLE BAND =================
+\begin{tcbox}[bandbox,width=\linewidth,nobeforeafter]
+  \color{white}
+  {\bengalisffont\bfseries\fontsize{18}{23}\selectfont রেখাংশের ছেদ, ছেদবিন্দু ও লার্প \en{(LERP)}}\par\vspace{2pt}
+  {\bengalisffont\fontsize{10}{12.5}\selectfont হাতে-লেখা নোটের অ্যানালজি \en{+} পূর্ণ উপপাদন — গ্রাফ, চিত্র ও বোঝাপড়ার বাক্সসহ পরিষ্কার সংস্করণ}\par\vspace{4pt}
+  \pill{কেস ১: ছেদ কি? (বুলিয়ান)}\hspace{1.5mm}\pill{কেস ২: \en{t} অনুপাত (লার্প)}\hspace{1.5mm}\pill{কেস ৩: তলে বিন্দু}
+\end{tcbox}
+
+% ================= ROADMAP STRIP =================
+\begin{tcolorbox}[roadbox,width=\linewidth]
+  \centering
+  \begin{tikzpicture}[node distance=5mm,>=Stealth,
+    step/.style={draw=tealdk,fill=white,rounded corners=2pt,font=\bengalisffont\bfseries\fontsize{7.6}{9}\selectfont,inner sep=4pt,align=center,text=tealdk,minimum height=9mm},
+    ar/.style={-Stealth,tealdk,thick}]
+    \node[step] (s1) {দুই রেখাংশ\\ \en{AB, CD}};
+    \node[step,right=of s1] (s2) {অরিয়েন্টেশন:\\ ছেদ করে কি?};
+    \node[step,right=of s2] (s3) {নির্ণায়ক থেকে\\ \en{t}, \en{u}};
+    \node[step,right=of s3] (s4) {লার্প:\\ \en{(1-t)A+tB}};
+    \node[step,right=of s4,draw=accent,text=accent] (s5) {ছেদবিন্দু \en{P}};
+    \foreach \x/\y in {s1/s2,s2/s3,s3/s4,s4/s5}\draw[ar] (\x) -- (\y);
+  \end{tikzpicture}\par\vspace{1pt}
+  {\bengalisffont\fontsize{8}{10}\selectfont\color{ink} পুরো নোটটা এই পাঁচ ধাপের বিস্তারিত ব্যাখ্যা — উপরের রোডম্যাপ মনে রাখলে যেকোনো ধাপে হারিয়ে গেলেও ফিরে আসা সহজ}
+\end{tcolorbox}
+
+% ================= ROW 1 : problem & 3 cases =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০১}{সমস্যা ও তিন কেস}}]
+  \centering
+  \begin{tikzpicture}[scale=0.55,>=Stealth]
+    \draw[gray!35,step=0.5] (-0.6,-2.1) grid (6.6,3.1);
+    \draw[->,ink!70,thick] (-0.6,0) -- (6.6,0) node[ln,below right,inner sep=1pt]{x};
+    \draw[->,ink!70,thick] (0,-2.1) -- (0,3.1) node[ln,above left,inner sep=1pt]{y};
+    \draw[tealdk,line width=1.6pt] (0,0) -- (6,2.4);
+    \draw[accent,line width=1.6pt] (1,2.8) -- (5,-1.8);
+    \fill[tealdk] (0,0) circle (2.6pt) node[ln,left] {A};
+    \fill[tealdk] (6,2.4) circle (2.6pt) node[ln,right] {B};
+    \fill[accent] (1,2.8) circle (2.6pt) node[ln,above] {C};
+    \fill[accent] (5,-1.8) circle (2.6pt) node[ln,below] {D};
+    \draw[ink!50,dashed,thin] (3.15,1.26) -- (3.15,0);
+    \draw[ink!50,dashed,thin] (3.15,1.26) -- (0,1.26);
+    \fill[ink] (3.15,1.26) circle (3pt) node[ln,above right] {P};
+    \node[bn,ink!70] at (3.15,-0.35) {\en{x}};
+    \node[bn,ink!70] at (-0.35,1.26) {\en{y}};
+  \end{tikzpicture}\par\vspace{3pt}
+  \colorbox{teal!12}{{\bengalisffont\scriptsize\color{tealdk}\strut\ কেস ১: ছেদ করে কি? উত্তর হ্যাঁ/না}}\par\vspace{2pt}
+  \colorbox{teal!12}{{\bengalisffont\scriptsize\color{tealdk}\strut\ কেস ২: কোথায়? \en{t} বা \en{u} অনুপাত (লার্প)}}\par\vspace{2pt}
+  \colorbox{teal!12}{{\bengalisffont\scriptsize\color{tealdk}\strut\ কেস ৩: \en{P=(x,y)} তলে এঁকে দেখাও}}
+  \tcblower
+  \stitle{সমস্যা (নোট অনুযায়ী)}
+  মনে করো, একটি তলে চারটি বিন্দু \en{A, B, C, D}। \en{A} ও \en{B}-এর মাঝের রেখাংশ \en{AB},
+  আর \en{C} ও \en{D}-এর মাঝের রেখাংশ \en{CD}। তিনটি কেস:
+  \begin{enumerate}[nosep,leftmargin=14pt,label=\bengalisffont\bfseries কেস \arabic{enumi}:]
+    \item \en{AB} কি \en{CD}-কে ছেদ করে? (বুলিয়ান উত্তর)
+    \item ছেদ করলে কোথায় — রেখাংশের দৈর্ঘ্যের অনুপাত হিসেবে, লার্প আকারে প্রকাশ।
+    \item ছেদবিন্দুটি তলে (প্ল্যানে) স্থানাঙ্কসহ উপস্থাপন।
+  \end{enumerate}
+  \[ A=(A_x,A_y),\ \ B=(B_x,B_y),\ \ C=(C_x,C_y),\ \ D=(D_x,D_y) \]
+  \insight{ছবিতে ছেদবিন্দু \en{P} থেকে টানা ড্যাশ-করা রেখাদুটো ঠিক এটাই দেখাচ্ছে — \en{P}-এর একটা নির্দিষ্ট \en{(x,y)} ঠিকানা আছে; কেস ৩ সেটাই বের করবে।}
+\end{tcolorbox}
+
+% ================= ROW 2 : displacement-vector analogy =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০২}{সরণ ভেক্টর অ্যানালজি}}]
+  \centering
+  \begin{tikzpicture}[scale=0.72,>=Stealth]
+    \draw[->,gray] (-0.6,0) -- (5.4,0);
+    \draw[->,gray] (0,-0.9) -- (0,3.1);
+    \fill[teal!16] (0.5,0.7) -- (4.6,1.6) -- (2.7,2.7) -- cycle;
+    \fill[ink] (0.5,0.7) circle (2.4pt) node[ln,left] {A};
+    \draw[->,tealdk,line width=1.5pt] (0.5,0.7) -- (4.6,1.6) node[ln,right] {B};
+    \draw[->,accent,line width=1.3pt] (0.5,0.7) -- (2.7,2.7) node[ln,right] {C};
+    \draw[->,minc,line width=1.3pt] (0.5,0.7) -- (3.6,-0.5) node[ln,right] {D};
+    \draw[tealdk!60,domain=8:38,samples=20] plot ({0.5+1.1*cos(\x)},{0.7+1.1*sin(\x)});
+    \node[bn,tealdk] at (2.7,2.05) {ক্ষেত্রফল};
+    \node[bn,tealdk] at (2.55,1.85) {$\propto|\det|$};
+    \node[bn,minc] at (2.9,0.2) {উল্টো পাশ};
+  \end{tikzpicture}\par\vspace{2pt}
+  {\bengalisffont\scriptsize\color{ink} \en{A} থেকে তিনটি সরণ: \en{AB, AC, AD};\par ছায়াযুক্ত ত্রিভুজ \en{= ABC}-এর ক্ষেত্রফল}
+  \tcblower
+  \stitle{কেস ১-এর অ্যানালজি: সরণ ভেক্টর}
+  ধরি \en{A} থেকে \en{B}-এর দিকে এগোচ্ছি। সরণ ভেক্টর লিখি:
+  \[ \vec{AB}=B-A,\qquad \vec{AC}=C-A,\qquad \vec{AD}=D-A \]
+  এখন \en{AB} ও \en{AC}-এর নির্ণায়ক নিই:
+  \[ \operatorname{orient}(A,B,C)=\det(\vec{AB},\vec{AC}),\qquad
+     \operatorname{orient}(A,B,D)=\det(\vec{AB},\vec{AD}) \]
+  \insight{\en{det=0} হলে \en{C} ঠিক \en{AB} সরলরেখার উপরেই; \en{|det|} যত বড়, \en{C} রেখা থেকে তত দূরে — কারণ \en{|det(AB,AC)|} আসলে \en{AB} ও \en{AC} দিয়ে তৈরি সামান্তরিকের ক্ষেত্রফল, অর্থাৎ ত্রিভুজ \en{ABC}-এর ক্ষেত্রফলের দ্বিগুণ। আর চিহ্ন (+/−) বলে দেয় কোন পাশে।}
+\end{tcolorbox}
+
+% ================= ROW 3 : crossing conditions =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৩}{পাশ ও ছেদের শর্ত}}]
+  \centering
+  \begin{tikzpicture}[scale=0.58,>=Stealth]
+    \fill[plusc!12] (-0.4,0.2) rectangle (6.4,2.6);
+    \fill[minc!12] (-0.4,-2.2) rectangle (6.4,-0.2);
+    \draw[->,ink,line width=1.2pt] (0,0) -- (6,0);
+    \fill[ink] (0,0) circle (2.2pt) node[ln,below left] {A};
+    \fill[ink] (6,0) circle (2.2pt) node[ln,below right] {B};
+    \fill[plusc] (2.2,1.5) circle (2.4pt) node[ln,above] {C};
+    \fill[minc] (4.2,-1.4) circle (2.4pt) node[ln,below] {D};
+    \node[bn,plusc] at (1.4,2.2) {ধন পাশ (+)};
+    \node[bn,minc] at (1.4,-1.8) {ঋণ পাশ (-)};
+  \end{tikzpicture}\par\vspace{3pt}
+  \begin{tikzpicture}[x=1.45cm,y=0.5cm]
+    \foreach \ii/\ss/\cc in {1/{+}/plusc,2/{-}/minc,3/{+}/plusc,4/{-}/minc}{
+      \node[ln,anchor=west] at (0,-\ii) {o\ii};
+      \fill[\cc!85,rounded corners=2pt] (0.8,-\ii-0.32) rectangle (3.6,-\ii+0.32);
+      \node[font=\bengalisffont\scriptsize\bfseries,text=white] at (2.2,-\ii) {\ss};
+    }
+    \node[bn] at (2.2,-5.4) {বিপরীত চিহ্ন হলেই ছেদ};
+  \end{tikzpicture}
+  \tcblower
+  \stitle{ছেদের শর্ত (নোটের ভাষায়)}
+  ছেদ ঘটবে যখন—
+  \begin{enumerate}[nosep,leftmargin=14pt,label=(\arabic{enumi})]
+    \item \en{det(AB,AC)} ধনাত্মক হলে \en{det(AB,AD)} ঋণাত্মক বা \en{0};
+    \item \en{det(AB,AD)} ধনাত্মক হলে \en{det(AB,AC)} ঋণাত্মক বা \en{0};
+  \end{enumerate}
+  অর্থাৎ \en{C} ও \en{D} থাকে \en{AB}-এর বিপরীত পাশে। গাণিতিক রূপ:
+  \en{o1=orient(A,B,C)}, \en{o2=orient(A,B,D)}, \en{o3=orient(C,D,A)}, \en{o4=orient(C,D,B)} হলে—
+  \[ \text{যথাযথ ছেদ:}\quad o_1 o_2 < 0 \ \ \text{এবং}\ \ o_3 o_4 < 0 \]
+  \insight{\en{AB} রেখা পার হয়ে গেলে বিন্দুটা উল্টো পাশে চলে যায় — তাই চিহ্ন পাল্টানোই হলো "পার হওয়া"-র সংকেত।}
+  প্রান্তবিন্দু-স্পর্শ বা সমরেখ ক্ষেত্রে অরিয়েন্টেশন শূন্য হয় — তখন \en{on-segment}/বাউন্ডিং-বক্স পরীক্ষা,
+  আর সমরেখ হলে ১-মাত্রিক প্রক্ষেপণের ওভারল্যাপ দেখতে হয়।
+\end{tcolorbox}
+
+% ================= ROW 4 : params + vector triangle =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৪}{ভেক্টর ট্রায়াঙ্গেল}}]
+  \centering
+  \begin{tikzpicture}[scale=0.8,>=Stealth]
+    \fill[ink] (0,0) circle (2.4pt) node[ln,below left] {A};
+    \fill[accent] (4.4,2.4) circle (2.4pt) node[ln,above right] {C};
+    \fill[minc] (3,1.2) circle (3pt) node[ln,below right] {P};
+    \draw[->,tealdk,line width=1.6pt] (0,0) -- (2.9,1.14) node[bn,tealdk,below left] {\en{t(B-A)} = \en{AP}};
+    \draw[->,accent,line width=1.4pt] (4.4,2.4) -- (3.1,1.32) node[bn,accent,above right] {\en{u(D-C)} = \en{CP}};
+    \draw[->,gray,dashed,line width=1pt] (0,0) -- (4.3,2.34) node[bn,gray,above left] {\en{q=C-A}};
+    \node[bn] at (2.2,3.0) {ত্রিভুজ বন্ধ হয়: \en{AP = AC + CP}};
+  \end{tikzpicture}\par\vspace{2pt}
+  {\bengalisffont\scriptsize\color{ink} \en{t(B-A)} হলো \en{AP} ভেক্টর,\par \en{u(D-C)} হলো \en{CP} ভেক্টর}
+  \tcblower
+  \stitle{কেস ২: প্যারামিটারাইজেশন}
+  \en{AB} বরাবর যেকোনো বিন্দু \en{P_{AB}=A+t(B-A)}; \en{CD} বরাবর \en{P_{CD}=C+u(D-C)}।
+  ছেদবিন্দুতে \en{P_{AB}=P_{CD}}:
+  \[ A+t(B-A)=C+u(D-C)\ \Rightarrow\ \boxed{\,t(B-A)-u(D-C)=C-A\,} \]
+  ধরি \en{r=B-A}, \en{s=D-C}, \en{q=C-A}; তবে সমীকরণটি দাঁড়ায় \en{t r - u s = q}।
+  \insight{\en{t(B-A)} বলছে \en{A} থেকে ছেদবিন্দু পর্যন্ত ভেক্টর (\en{AP}), আর \en{u(D-C)} বলছে \en{C} থেকে ছেদবিন্দু পর্যন্ত (\en{CP})। বাঁ-পাশের ত্রিভুজে \en{AC + CP = AP} বন্ধ হওয়াটাই এই সমীকরণের ছবি।}
+  \en{0\le t\le1} হলে \en{P} থাকে \en{AB}-এর উপর; \en{0\le u\le1} হলে \en{CD}-এর উপর।
+\end{tcolorbox}
+
+% ================= ROW 5 : why s / why r =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৫}{কেন \en{s}? কেন \en{r}?}}]
+  \centering
+  \begin{tikzpicture}[node distance=4mm,
+    bx/.style={draw=tealdk,fill=white,rounded corners=2pt,font=\bengalisffont\tiny,inner sep=2.5pt,align=center,minimum width=5.2cm},
+    ar/.style={->,tealdk,thick}]
+    \node[bx] (a) {\en{t r - u s = q}};
+    \node[bx,below=of a] (b) {\en{t} চাই, \en{u} নয় \en{=>} দ্বিতীয় ভেক্টর \en{s}};
+    \node[bx,below=of b] (c) {\en{det(s,s)=0}, তাই \en{u} উধাও};
+    \node[bx,below=of c] (d) {\en{u} চাই, \en{t} নয় \en{=>} দ্বিতীয় ভেক্টর \en{r}};
+    \node[bx,draw=accent,below=of d] (e) {\en{det(r,r)=0}, তাই \en{t} উধাও};
+    \foreach \x/\y in {a/b,b/c,c/d,d/e} \draw[ar] (\x) -- (\y);
+  \end{tikzpicture}
+  \tcblower
+  \stitle{নির্ণায়ক দিয়ে \en{t} — দ্বিতীয় ভেক্টর \en{s}}
+  \en{t} বের করতে চাই, তাই \en{u}-কে cancel করা দরকার। এ জন্য দুই পক্ষের নির্ণায়ক নিই
+  \en{s}-কে দ্বিতীয় ভেক্টর রেখে — কারণ \en{det(s,s)=0}:
+  \[ t\,\det(r,s) - u\,\underbrace{\det(s,s)}_{0} = \det(q,s)
+     \ \Rightarrow\ t = \frac{\det(C-A,\ D-C)}{\det(B-A,\ D-C)} \]
+
+  \stitle{\en{u} — দ্বিতীয় ভেক্টর \en{r}}
+  একই যুক্তি উল্টো দিকে: \en{u} বের করতে \en{t} cancel চাই, তাই দ্বিতীয় ভেক্টর \en{r},
+  কারণ \en{det(r,r)=0}:
+  \[ -u\,\det(s,r)=\det(q,r)
+     \ \Rightarrow\ u = \frac{\det(C-A,\ B-A)}{\det(B-A,\ D-C)} \]
+\end{tcolorbox}
+
+% ================= ROW 6 : lerp slider + meaning =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৬}{লার্প স্লাইডার ও প্রয়োগ}}]
+  \centering
+  \begin{tikzpicture}[scale=0.85,>=Stealth]
+    \draw[line width=2pt,tealdk] (0,0) -- (6,0);
+    \foreach \xx/\vv in {0/০,1.5/০.২৫,3/০.৫,4.5/০.৭৫,6/১}{
+      \draw[ink,thick] (\xx,-0.12) -- (\xx,0.12);
+      \node[bn] at (\xx,-0.55) {\en{t}=\vv};
+    }
+    \fill[tealdk] (0,0) circle (2.6pt) node[ln,above left] {A};
+    \fill[tealdk] (6,0) circle (2.6pt) node[ln,above right] {B};
+    \fill[accent] (3,0) circle (3.4pt) node[bn,above] {P (মধ্যবিন্দু)};
+    \draw[->,accent,thick] (3,0.9) .. controls (3.8,0.9) .. (4.4,0.25);
+    \node[bn,accent] at (2.0,1.0) {\en{t} বাড়লে \en{B}-এর দিকে};
+  \end{tikzpicture}\par\vspace{2pt}
+  {\bengalisffont\scriptsize\color{ink}
+   \en{t=0} হলে \en{A}, \en{t=1} হলে \en{B}, \en{t=0.5} হলে মধ্যবিন্দু}
+  \tcblower
+  \stitle{প্রকৃত ছেদবিন্দু (কেস ৩-এর সূত্র)}
+  \en{t} জানা থাকলে—
+  \[ x = A_x + t(B_x-A_x), \qquad y = A_y + t(B_y-A_y) \]
+  সমতুল্যভাবে \en{P=C+u(D-C)}; দুই প্যারামিটারাইজেশন একই বিন্দু দেয় — এটাই যাচাইয়ের trick।
+
+  \stitle{লার্প ব্যাখ্যা}
+  \[ \operatorname{LERP}(A,B,t) = (1-t)A + tB = A + t(B-A) \]
+  \en{t} বলে দেয়—\en{A} থেকে \en{B}-এর দিকে নির্দেশিত দৈর্ঘ্যের কত অংশ এগোলে \en{P}।
+
+  \stitle{কোন রেখাংশ ব্যবহার করব?}
+  \begin{tabular}{@{}llll@{}}
+  \toprule
+  পছন্দ & প্যারামিটার & বিন্দুর সূত্র & অর্থ \\
+  \midrule
+  \en{AB} & \en{t} & \en{P=A+t(B-A)} & \en{A} থেকে \en{B} বরাবর ভগনাংশ \\
+  \en{CD} & \en{u} & \en{P=C+u(D-C)} & \en{C} থেকে \en{D} বরাবর ভগনাংশ \\
+  \bottomrule
+  \end{tabular}
+\end{tcolorbox}
+
+% ================= ROW 7 : algorithm (decision flow) =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৭}{সম্পূর্ণ অ্যালগরিদম}}]
+  \centering
+  \begin{tikzpicture}[node distance=3.2mm,
+    bx/.style={draw=tealdk,fill=white,rounded corners=2pt,font=\bengalisffont\tiny,inner sep=2.5pt,align=center,minimum width=5.2cm},
+    bxr/.style={draw=minc,fill=minc!6,rounded corners=2pt,font=\bengalisffont\tiny,inner sep=2.5pt,align=center,minimum width=5.2cm},
+    bxg/.style={draw=plusc,fill=plusc!8,rounded corners=2pt,font=\bengalisffont\tiny,inner sep=2.5pt,align=center,minimum width=5.2cm},
+    ar/.style={->,tealdk,thick},
+    lbl/.style={font=\bengalisffont\tiny,text=ink}]
+    \node[bx] (a) {\en{o1,o2,o3,o4} (অরিয়েন্টেশন) গণনা করো};
+    \node[bx,below=of a] (b) {\en{o1\,o2<0} ও \en{o3\,o4<0}\ ?};
+    \node[bxg,below=of b] (c) {হ্যাঁ \en{=>} যথাযথ ছেদ: \en{t,u} বসিয়ে \en{P} নাও};
+    \node[bx,below=of c] (d) {না \en{=>} কোনো \en{o_i=0}\ ?};
+    \node[bxr,below=of d] (e) {হ্যাঁ \en{=>} \en{on\text{-}segment}/সমরেখ পরীক্ষা};
+    \node[bxr,below=of e] (f) {না \en{=>} ছেদ নেই};
+    \foreach \x/\y in {a/b,b/c,b/d,d/e,d/f} \draw[ar] (\x) -- (\y);
+  \end{tikzpicture}
+  \tcblower
+  \stitle{ধাপে ধাপে}
+  \begin{enumerate}[nosep,leftmargin=14pt,label=\arabic{enumi}.]
+    \item \en{o1..o4} অরিয়েন্টেশন গণনা করো।
+    \item যথাযথ ছেদের জন্য \en{o1 o2<0} ও \en{o3 o4<0} যাচাই করো।
+    \item শূন্য অরিয়েন্টেশনে \en{on-segment}/বাউন্ডিং-বক্স পরীক্ষা করো।
+    \item \en{det(B-A,D-C)} শূন্য নয় হলে \en{t} গণনা করো।
+    \item \en{P=A+t(B-A)} বসিয়ে ছেদবিন্দু নাও।
+    \item প্রয়োজনে \en{u} গণনা করে \en{0<=t<=1}, \en{0<=u<=1} যাচাই করো।
+  \end{enumerate}
+  \warnbox{\en{det(B-A,D-C)=0} মানে \en{AB} ও \en{CD} সমান্তরাল (বা একই রেখায়) — তখন \en{t,u} সংজ্ঞায়িত নয়; ভাগ করার আগেই এই কেসটা আলাদাভাবে পরীক্ষা করে নাও।}
+\end{tcolorbox}
+
+% ================= ROW 8 : example graph (case 3) =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৮}{কেস ৩: সংখ্যাগত উদাহরণ \en{+} গ্রাফ}}]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[width=6.2cm,height=7.0cm,grid=both,minor tick num=1,
+      xmin=-1,xmax=11,ymin=-4,ymax=5,
+      xtick={0,5,10},xticklabels={\text{০},\text{৫},\text{১০}},
+      ytick={-4,0,4},yticklabels={\text{-৪},\text{০},\text{৪}},
+      tick label style={font=\bengalisffont\tiny},
+      legend style={font=\bengalisffont\tiny,at={(0.5,-0.09)},anchor=north,legend columns=2,draw=gray!40},
+      axis line style={thick}]
+      \addplot[tealdk,line width=1.8pt] coordinates {(0,0) (10,0)};
+      \addlegendentry{\en{AB} (\en{t})}
+      \addplot[accent,line width=1.8pt] coordinates {(5,-3) (5,4)};
+      \addlegendentry{\en{CD} (\en{u})}
+      \draw[ink!45,dashed,thin] (axis cs:5,0) -- (axis cs:5,-4);
+      \node[label={[font=\latinrm\tiny\bfseries]left:A}] at (axis cs:0,0) {};
+      \node[label={[font=\latinrm\tiny\bfseries]right:B}] at (axis cs:10,0) {};
+      \node[label={[font=\latinrm\tiny\bfseries]below right:C}] at (axis cs:5,-3) {};
+      \node[label={[font=\latinrm\tiny\bfseries]above right:D}] at (axis cs:5,4) {};
+      \fill[ink] (axis cs:5,0) circle (3pt)
+        node[label={[font=\bengalisffont\tiny\bfseries]above left:\en{P}=(৫,০)}] {};
+      \node[bn,tealdk] at (axis cs:7.3,0.65) {\en{t=1/2} এখানে};
+    \end{axis}
+  \end{tikzpicture}
+  \tcblower
+  \stitle{সংখ্যাগত উদাহরণ}
+  ধরি \en{A=(0,0)}, \en{B=(10,0)}, \en{C=(5,-3)}, \en{D=(5,4)}; ছেদ \en{x=5}-এ (গ্রাফে ড্যাশ-করা রেখা)।
+  \en{B-A=(10,0)}, \en{D-C=(0,7)}, \en{C-A=(5,-3)}:
+  \[ t = \frac{\det((5,-3),(0,7))}{\det((10,0),(0,7))}
+       = \frac{35}{70} = \frac{1}{2} \]
+  সুতরাং \en{P=(5,0)} — \en{AB}-এর ঠিক অর্ধেক; আর \en{u=3/7}।
+  \[ \text{যাচাই:}\quad P = C+\tfrac{3}{7}(D-C) = (5,\ -3+3) = (5,0)\ \checkmark \]
+  \insight{দুইভাবে \en{P} বের করে একই উত্তর পাওয়া গেল — এটাই ভুল ধরার সবচেয়ে সহজ trick।}
+\end{tcolorbox}
+
+% ================= ROW 9 : chart + key formulas =================
+\begin{tcolorbox}[rowcard,title={\cardtitle{০৯}{\en{t} বনাম \en{u} চার্ট \en{+} মূল সূত্র}}]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[ybar,width=6.2cm,height=5.6cm,bar width=34pt,
+      ymin=0,ymax=1,minor tick num=1,grid=both,
+      symbolic x coords={t,u},xtick={t,u},
+      xticklabels={\text{\en{t} (\en{AB})},\text{\en{u} (\en{CD})}},
+      ytick={0,0.5,1},yticklabels={\text{০},\text{০.৫},\text{১}},
+      tick label style={font=\bengalisffont\tiny},
+      nodes near coords,
+      nodes near coords style={font=\bengalisffont\tiny\bfseries},
+      point meta=explicit symbolic]
+      \addplot[fill=teal,draw=tealdk] coordinates {(t,0.5) [\text{০.৫}] (u,0.43) [\text{০.৪৩}]};
+    \end{axis}
+  \end{tikzpicture}\par\vspace{2pt}
+  {\bengalisffont\scriptsize\color{ink} উভয়ে \en{[0,1]}-এর ভিতরে, তাই ছেদ বৈধ}
+  \tcblower
+  \stitle{মূল সূত্রসমূহ}
+  \begin{align*}
+    \operatorname{orient}(X,Y,Z) &= \det(Y-X,\ Z-X)\\[1pt]
+    t &= \frac{\det(C-A,\ D-C)}{\det(B-A,\ D-C)}\\[1pt]
+    u &= \frac{\det(C-A,\ B-A)}{\det(B-A,\ D-C)}\\[1pt]
+    P &= A + t(B-A)\\[1pt]
+    \operatorname{LERP}(A,B,t) &= (1-t)A + tB
+  \end{align*}
+  যথাযথ অভ্যন্তরীণ ছেদের শর্ত: \en{0<t<1} এবং \en{0<u<1}।
+  \warnbox{হর \en{det(B-A,D-C)=0} হলে \en{AB}\,\|\,\en{CD} — উপরের কোনো সূত্রই প্রযোজ্য নয়।}
+  \colorbox{panel}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}{\bengalisffont\scriptsize\color{ink}\strut সারসংক্ষেপ: সরণ ভেক্টরের নির্ণায়ক পাশ ও দূরত্ব বলে; বিপরীত পাশ মানে ছেদ; আর ভেক্টর-ত্রিভুজ থেকে \en{t,u}, লার্প থেকে \en{P}।\end{minipage}}
+\end{tcolorbox}
+
+% ================= FOOTER =================
+\begin{tcbox}[footbox,width=\linewidth,nobeforeafter]\color{white}
+  {\bengalisffont\bfseries\fontsize{10}{12}\selectfont এক নজরে}\hspace{3mm}%
+  {\bengalisffont\fontsize{8.5}{11}\selectfont ছেদ: \en{o1o2<0, o3o4<0}\ \ /\ \ \en{t=det(C-A,D-C)/det(B-A,D-C)}\ \ /\ \ \en{P=A+t(B-A)}\ \ /\ \ \en{LERP(A,B,t)=(1-t)A+tB}}%
+\end{tcbox}
+
+\end{document}
